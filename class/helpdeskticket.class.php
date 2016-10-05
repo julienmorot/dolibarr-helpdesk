@@ -32,12 +32,12 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
 //require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
 
 /**
- * Class HelpdeskTicket
+ * Class Helpdeskticket
  *
  * Put here description of your class
  * @see CommonObject
  */
-class HelpdeskTicket extends CommonObject
+class Helpdeskticket extends CommonObject
 {
 	/**
 	 * @var string Id to identify managed objects
@@ -49,7 +49,7 @@ class HelpdeskTicket extends CommonObject
 	public $table_element = 'helpdesk_ticket';
 
 	/**
-	 * @var HelpdeskTicketLine[] Lines
+	 * @var HelpdeskticketLine[] Lines
 	 */
 	public $lines = array();
 
@@ -89,8 +89,7 @@ class HelpdeskTicket extends CommonObject
 	 *
 	 * @return int <0 if KO, Id of created object if OK
 	 */
-	//public function create(User $user, $notrigger = false)
-	public function create()
+	public function create(User $user, $notrigger = false)
 	{
 		dol_syslog(__METHOD__, LOG_DEBUG);
 
@@ -310,7 +309,7 @@ class HelpdeskTicket extends CommonObject
 			$num = $this->db->num_rows($resql);
 
 			while ($obj = $this->db->fetch_object($resql)) {
-				$line = new HelpdeskTicketLine();
+				$line = new HelpdeskticketLine();
 
 				$line->id = $obj->rowid;
 				
@@ -491,7 +490,7 @@ class HelpdeskTicket extends CommonObject
 
 		global $user;
 		$error = 0;
-		$object = new HelpdeskTicket($this->db);
+		$object = new Helpdeskticket($this->db);
 
 		$this->db->begin();
 
@@ -646,9 +645,9 @@ class HelpdeskTicket extends CommonObject
 }
 
 /**
- * Class HelpdeskTicketLine
+ * Class HelpdeskticketLine
  */
-class HelpdeskTicketLine
+class HelpdeskticketLine
 {
 	/**
 	 * @var int ID

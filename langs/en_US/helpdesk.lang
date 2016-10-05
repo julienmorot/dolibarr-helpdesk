@@ -1,9 +1,11 @@
 HelpdeskCreateNew=Create incident
 HelpdeskCaller=Caller
 HelpdeskShortDescription=Short Description
-HelpdeskLongDescription=Descriptif de la demande
+HelpdeskLongDescription=Description of the demand
 HelpDeskListOfTickets=List of Tickets
 HelpDeskTicketNumber=Number
 HelpdeskCreatedBy=Opened by
 HelpdeskDateCreation=Created on
 HelpdeskTicketState=State
+HelpdeskPrivateComment=Private comment
+HelpdeskPublicComment=Public comment

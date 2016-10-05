@@ -18,6 +18,8 @@ llxHeader("","Helpdesk");
 
 print load_fiche_titre($langs->trans('HelpdeskAnwser'),'','title_commercial.png');
 
+
+
 //FIXME : Update pas optimal du tout!
 if ($action == 'update') {
     $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set entity='.GETPOST('socid','int').' WHERE rowid='.$ticket.';';
@@ -28,11 +30,21 @@ if ($action == 'update') {
     $db->query($sql);
     $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set title="'.GETPOST('ticket_shortdesc','alpha').'" WHERE rowid='.$ticket.';';
     $db->query($sql);
-    $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set description="'.GETPOST('ticket_longdescription','alpha').'" WHERE rowid='.GETPOST('ticket','int').';';
+    $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set description="'.GETPOST('ticket_longdescription','alpha').'" WHERE rowid='.$ticket.';';
     $db->query($sql);
     
-    $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set datem='.time().' WHERE rowid='.GETPOST('ticket','int').';';
+    $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set datem=NOW() WHERE rowid='.$ticket.';';
     $db->query($sql);
+
+    if ( ( (GETPOST('ticket_private_comment','alpha') != "" )) || ( (GETPOST('ticket_public_comment','alpha') != "")) ) {
+        $object = new Helpdeskcomment($db);
+        $object->datec = time();
+        $object->userid = GETPOST("commercial_suivi_id");
+        $object->ticketid = $ticket;
+        $object->pubdesc = GETPOST('ticket_public_comment','alpha');
+        $object->privdesc = GETPOST('ticket_private_comment','alpha');
+        $object->create();
+    }
 
 } else {
 
@@ -81,19 +93,39 @@ print '<td colspan="2"><input type="text" size="150" name="ticket_shortdesc" id=
 print '<tr><td>'.$langs->trans("HelpdeskLongDescription").'</td><td valign="top">';
 
 $doleditor=new DolEditor('ticket_longdescription', $obj->description, '', '100', 'ticket_notes', 'In', 1, true, true, 0, 70);
-print $doleditor->Create();
+print $doleditor->Create(1);
+print '<tr><td height="100"></td><td height="100"></td></tr>';
+print '<tr><td class="nowrap">'.$langs->trans("HelpdeskPrivateComment").'</td>';
+print '<td><textarea style="color: black; background-color: #ffff99" id="ticket_private_comment" name="ticket_private_comment" rows="8" cols="100" class="flat"></textarea></td></tr>';
+print '<tr><td>'.$langs->trans("HelpdeskPublicComment").'</td>';
+print '<td colspan="2"><textarea id="ticket_public_comment" name="ticket_public_comment" rows="8" cols="100" class="flat"></textarea></td></tr>';
 
-
-print "\n".'<tr><td>'.$lang->trans("HelpdeskPrivateComment").'</td>';
-print "\n".'<td><textarea id="ticket_private_comment" name="ticket_private_comment" rows="5" cols="70" class="flat"></td></tr>'."\n";
-print "\n".'<tr><td>'.$lang->trans("HelpdeskPublicComment").'</td>';
-print "\n".'<td><textarea id="ticket_private_comment" name="ticket_public_comment" rows="5" cols="70" class="flat"></td></tr>'."\n";
-
-print '<div align="center"><input type="submit" class="button" value="'.$langs->trans("Update").'"></div>';
+print '<tr><td colspan="2"><br /><div align="center"><input type="submit" class="button" value="'.$langs->trans("Update").'"></div></td></tr>';
 
 print "</form>\n";
 
+$sql="SELECT c.rowid, c.userid, c.datec, c.pubdesc, c.privdesc, u.firstname, u.lastname ";
+$sql.= 'FROM '.MAIN_DB_PREFIX."helpdesk_comment as c, ";
+$sql.= MAIN_DB_PREFIX."user as u ";
+$sql.= ' WHERE c.ticketid = '.$ticket;
+$sql.= ' AND u.rowid = c.userid';
+$sql.= ' ORDER BY datec DESC';
+$sql.= ';';
 
+$result = $db->query($sql);
+
+if ($result)
+{
+    while ($obj = $db->fetch_object($result)) {
+        print "<tr>";
+        print '<td>'.$obj->firstname.' '.$obj->lastname.' - '.date( 'Y-m-d H:i:s', strtotime($obj->datec)).'</td>';
+        print '<td style="color: black; background-color: #ffff99">'.$obj->privdesc.'</td>';
+        print "<tr>";
+        print '<td>'.$obj->firstname.' '.$obj->lastname.' - '.date( 'Y-m-d H:i:s', strtotime($obj->datec)).'</td>';
+        print '<td>'.$obj->pubdesc.'</td>';
+        print '<tr><td></td><td></td></tr>';
+    }
+}
 
 
 
@@ -101,7 +133,6 @@ print "</table>\n";
 
 }
 
-dol_fiche_end();
 
 
 llxFooter();

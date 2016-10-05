@@ -58,6 +58,7 @@ class Helpdeskcomment extends CommonObject
 	
 	public $datec = '';
 	public $userid;
+	public $ticketid;
 	public $pubdesc;
 	public $privdesc;
 
@@ -79,12 +80,11 @@ class Helpdeskcomment extends CommonObject
 	/**
 	 * Create object into database
 	 *
-	 * @param  User $user      User that creates
 	 * @param  bool $notrigger false=launch triggers after, true=disable triggers
 	 *
 	 * @return int <0 if KO, Id of created object if OK
 	 */
-	public function create(User $user, $notrigger = false)
+	public function create($notrigger = false)
 	{
 		dol_syslog(__METHOD__, LOG_DEBUG);
 
@@ -94,6 +94,9 @@ class Helpdeskcomment extends CommonObject
 		
 		if (isset($this->userid)) {
 			 $this->userid = trim($this->userid);
+		}
+		if (isset($this->ticketid)) {
+			 $this->ticketid = trim($this->ticketid);
 		}
 		if (isset($this->pubdesc)) {
 			 $this->pubdesc = trim($this->pubdesc);
@@ -112,6 +115,7 @@ class Helpdeskcomment extends CommonObject
 		
 		$sql.= 'datec,';
 		$sql.= 'userid,';
+		$sql.= 'ticketid,';
 		$sql.= 'pubdesc,';
 		$sql.= 'privdesc';
 
@@ -120,6 +124,7 @@ class Helpdeskcomment extends CommonObject
 		
 		$sql .= ' '."'".$this->db->idate(dol_now())."'".',';
 		$sql .= ' '.(! isset($this->userid)?'NULL':$this->userid).',';
+		$sql .= ' '.(! isset($this->ticketid)?'NULL':$this->ticketid).',';
 		$sql .= ' '.(! isset($this->pubdesc)?'NULL':"'".$this->db->escape($this->pubdesc)."'").',';
 		$sql .= ' '.(! isset($this->privdesc)?'NULL':"'".$this->db->escape($this->privdesc)."'");
 
@@ -178,6 +183,7 @@ class Helpdeskcomment extends CommonObject
 		
 		$sql .= " t.datec,";
 		$sql .= " t.userid,";
+		$sql .= " t.ticketid,";
 		$sql .= " t.pubdesc,";
 		$sql .= " t.privdesc";
 
@@ -199,6 +205,7 @@ class Helpdeskcomment extends CommonObject
 				
 				$this->datec = $this->db->jdate($obj->datec);
 				$this->userid = $obj->userid;
+				$this->ticketid = $obj->ticketid;
 				$this->pubdesc = $obj->pubdesc;
 				$this->privdesc = $obj->privdesc;
 
@@ -240,6 +247,7 @@ class Helpdeskcomment extends CommonObject
 		
 		$sql .= " t.datec,";
 		$sql .= " t.userid,";
+		$sql .= " t.ticketid,";
 		$sql .= " t.pubdesc,";
 		$sql .= " t.privdesc";
 
@@ -276,6 +284,7 @@ class Helpdeskcomment extends CommonObject
 				
 				$line->datec = $this->db->jdate($obj->datec);
 				$line->userid = $obj->userid;
+				$line->ticketid = $obj->ticketid;
 				$line->pubdesc = $obj->pubdesc;
 				$line->privdesc = $obj->privdesc;
 
@@ -313,6 +322,9 @@ class Helpdeskcomment extends CommonObject
 		if (isset($this->userid)) {
 			 $this->userid = trim($this->userid);
 		}
+		if (isset($this->ticketid)) {
+			 $this->ticketid = trim($this->ticketid);
+		}
 		if (isset($this->pubdesc)) {
 			 $this->pubdesc = trim($this->pubdesc);
 		}
@@ -330,6 +342,7 @@ class Helpdeskcomment extends CommonObject
 		
 		$sql .= ' datec = '.(! isset($this->datec) || dol_strlen($this->datec) != 0 ? "'".$this->db->idate($this->datec)."'" : 'null').',';
 		$sql .= ' userid = '.(isset($this->userid)?$this->userid:"null").',';
+		$sql .= ' ticketid = '.(isset($this->ticketid)?$this->ticketid:"null").',';
 		$sql .= ' pubdesc = '.(isset($this->pubdesc)?"'".$this->db->escape($this->pubdesc)."'":"null").',';
 		$sql .= ' privdesc = '.(isset($this->privdesc)?"'".$this->db->escape($this->privdesc)."'":"null");
 
@@ -573,6 +586,7 @@ class Helpdeskcomment extends CommonObject
 		
 		$this->datec = '';
 		$this->userid = '';
+		$this->ticketid = '';
 		$this->pubdesc = '';
 		$this->privdesc = '';
 
@@ -596,6 +610,7 @@ class HelpdeskcommentLine
 	
 	public $datec = '';
 	public $userid;
+	public $ticketid;
 	public $pubdesc;
 	public $privdesc;
 
