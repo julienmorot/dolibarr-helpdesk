@@ -9,7 +9,8 @@ create table llx_helpdesk_ticket
   closedby  integer,
   state     varchar(20),
   title     varchar(255) NOT NULL,
-  description text
+  description text,
+  callerid integer
 ) ENGINE=innodb;
 
 

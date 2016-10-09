@@ -25,6 +25,7 @@ if ($action == 'add') {
 	$object->state = 0;
 	$object->title = GETPOST('ticket_shortdesc','alpha');
 	$object->description = GETPOST('ticket_longdescription','alpha');
+    $object->callerid = GETPOST("contactid", "int");
 	$object->create();
 } else {
 
@@ -44,8 +45,13 @@ print '</td>';
 print '</tr>'."\n";
 
 print '<tr><td width="20%" class="nowrap"><span class="fieldrequired">'.$langs->trans("HelpdeskCaller").'</span></td><td>';
+print $form->selectcontacts(0,0,'contactid',2,'','',1,'',false,1);
+print '</td></tr>';
+
+print '<tr><td width="20%" class="nowrap"><span class="fieldrequired">'.$langs->trans("HelpdeskAssignedTo").'</span></td><td>';
 print $form->select_dolusers(GETPOST("commercial_suivi_id")?GETPOST("commercial_suivi_id"):$user->id,'commercial_suivi_id',1,'');
 print '</td></tr>';
+
 print '<tr><td class="filedrequired">'.$langs->trans('HelpdeskShortDescription').'</td>';
 print '<td colspan="2"><input type="text" size="150" name="ticket_shortdesc" id="ticket_shortdescref_customer"></td></tr>';
 

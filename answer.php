@@ -16,7 +16,7 @@ $ticket=GETPOST('ticket','int');
 
 llxHeader("","Helpdesk");
 
-print load_fiche_titre($langs->trans('HelpdeskAnwser'),'','title_commercial.png');
+print load_fiche_titre($langs->trans('HelpdeskAnswer'),'','title_commercial.png');
 
 
 
@@ -25,6 +25,8 @@ if ($action == 'update') {
     $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set entity='.GETPOST('socid','int').' WHERE rowid='.$ticket.';';
     $db->query($sql);
     $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set createdby='.GETPOST('commercial_suivi_id','int').' WHERE rowid='.$ticket.';';
+    $db->query($sql);
+    $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set callerid='.GETPOST('contactid','int').' WHERE rowid='.$ticket.';';
     $db->query($sql);
     $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set state='.GETPOST('state','int').' WHERE rowid='.$ticket.';';
     $db->query($sql);
@@ -80,15 +82,26 @@ print '</tr>'."\n";
 // FIXME : un select ça ne serait pas de refus
 print '<tr><td class="fieldrequired">'.$langs->trans('HelpdeskTicketState').'</td>';
 print '<td colspan="2">';
-print '<input type="text" size="1" name="state" value="'.$obj->state.'">';
+print '<select name="state" value="'.$obj->state.'">';
+print '    <option value="0">'.$langs->trans("HelpdeskStateNew").'</option>';
+print '    <option value="1">'.$langs->trans("HelpdeskStateAwaitingOperator").'</option>';
+print '    <option value="2">'.$langs->trans("HelpdeskStateAwaitingCustomer").'</option>';
+print '    <option value="3">'.$langs->trans("HelpdeskStateAwaitingEditor").'</option>';
+print '    <option value="4">'.$langs->trans("HelpdeskStateSolved").'</option>';
+print '</select>';
 print '</td>';
 print '</tr>'."\n";
 
-print '<tr><td width="20%" class="nowrap"><span class="fieldrequired">'.$langs->trans("HelpdeskCaller").'</span></td><td>';
+print '<tr><td width="20%" class="nowrap"><span class="fieldrequired">'.$langs->trans("HelpdeskAssignedTo").'</span></td><td>';
 print $form->select_dolusers($obj->createdby,'commercial_suivi_id',1,'');
 print '</td></tr>';
 print '<tr><td class="filedrequired">'.$langs->trans('HelpdeskShortDescription').'</td>';
 print '<td colspan="2"><input type="text" size="150" name="ticket_shortdesc" id="ticket_shortdescref_customer" value="'.$obj->title.'"></td></tr>'."\n";
+
+print '<tr><td width="20%" class="nowrap"><span class="fieldrequired">'.$langs->trans("HelpdeskCaller").'</span></td><td>';
+print $form->selectcontacts($obj->entity,$obj->callerid,'contactid',2,'','',1,'',false,1);
+print '</td></tr>';
+
 
 print '<tr><td>'.$langs->trans("HelpdeskLongDescription").'</td><td valign="top">';
 

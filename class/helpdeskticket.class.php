@@ -65,6 +65,7 @@ class Helpdeskticket extends CommonObject
 	public $state;
 	public $title;
 	public $description;
+	public $callerid;
 
 	/**
 	 */
@@ -84,12 +85,9 @@ class Helpdeskticket extends CommonObject
 	/**
 	 * Create object into database
 	 *
-	 * @param  User $user      User that creates
-	 * @param  bool $notrigger false=launch triggers after, true=disable triggers
-	 *
 	 * @return int <0 if KO, Id of created object if OK
 	 */
-	public function create(User $user, $notrigger = false)
+	public function create()
 	{
 		dol_syslog(__METHOD__, LOG_DEBUG);
 
@@ -115,6 +113,9 @@ class Helpdeskticket extends CommonObject
 		if (isset($this->description)) {
 			 $this->description = trim($this->description);
 		}
+		if (isset($this->callerid)) {
+			 $this->callerid = trim($this->callerid);
+		}
 
 		
 
@@ -132,7 +133,8 @@ class Helpdeskticket extends CommonObject
 		$sql.= 'closedby,';
 		$sql.= 'state,';
 		$sql.= 'title,';
-		$sql.= 'description';
+		$sql.= 'description,';
+		$sql.= 'callerid';
 
 		
 		$sql .= ') VALUES (';
@@ -145,7 +147,8 @@ class Helpdeskticket extends CommonObject
 		$sql .= ' '.(! isset($this->closedby)?'NULL':$this->closedby).',';
 		$sql .= ' '.(! isset($this->state)?'NULL':"'".$this->db->escape($this->state)."'").',';
 		$sql .= ' '.(! isset($this->title)?'NULL':"'".$this->db->escape($this->title)."'").',';
-		$sql .= ' '.(! isset($this->description)?'NULL':"'".$this->db->escape($this->description)."'");
+		$sql .= ' '.(! isset($this->description)?'NULL':"'".$this->db->escape($this->description)."'").',';
+		$sql .= ' '.(! isset($this->callerid)?'NULL':$this->callerid);
 
 		
 		$sql .= ')';
@@ -208,7 +211,8 @@ class Helpdeskticket extends CommonObject
 		$sql .= " t.closedby,";
 		$sql .= " t.state,";
 		$sql .= " t.title,";
-		$sql .= " t.description";
+		$sql .= " t.description,";
+		$sql .= " t.callerid";
 
 		
 		$sql .= ' FROM ' . MAIN_DB_PREFIX . $this->table_element . ' as t';
@@ -235,6 +239,7 @@ class Helpdeskticket extends CommonObject
 				$this->state = $obj->state;
 				$this->title = $obj->title;
 				$this->description = $obj->description;
+				$this->callerid = $obj->callerid;
 
 				
 			}
@@ -280,7 +285,8 @@ class Helpdeskticket extends CommonObject
 		$sql .= " t.closedby,";
 		$sql .= " t.state,";
 		$sql .= " t.title,";
-		$sql .= " t.description";
+		$sql .= " t.description,";
+		$sql .= " t.callerid";
 
 		
 		$sql .= ' FROM ' . MAIN_DB_PREFIX . $this->table_element. ' as t';
@@ -322,6 +328,7 @@ class Helpdeskticket extends CommonObject
 				$line->state = $obj->state;
 				$line->title = $obj->title;
 				$line->description = $obj->description;
+				$line->callerid = $obj->callerid;
 
 				
 
@@ -341,12 +348,11 @@ class Helpdeskticket extends CommonObject
 	/**
 	 * Update object into database
 	 *
-	 * @param  User $user      User that modifies
 	 * @param  bool $notrigger false=launch triggers after, true=disable triggers
 	 *
 	 * @return int <0 if KO, >0 if OK
 	 */
-	public function update(User $user, $notrigger = false)
+	public function update()
 	{
 		$error = 0;
 
@@ -372,6 +378,9 @@ class Helpdeskticket extends CommonObject
 		if (isset($this->description)) {
 			 $this->description = trim($this->description);
 		}
+		if (isset($this->callerid)) {
+			 $this->callerid = trim($this->callerid);
+		}
 
 		
 
@@ -389,7 +398,8 @@ class Helpdeskticket extends CommonObject
 		$sql .= ' closedby = '.(isset($this->closedby)?$this->closedby:"null").',';
 		$sql .= ' state = '.(isset($this->state)?"'".$this->db->escape($this->state)."'":"null").',';
 		$sql .= ' title = '.(isset($this->title)?"'".$this->db->escape($this->title)."'":"null").',';
-		$sql .= ' description = '.(isset($this->description)?"'".$this->db->escape($this->description)."'":"null");
+		$sql .= ' description = '.(isset($this->description)?"'".$this->db->escape($this->description)."'":"null").',';
+		$sql .= ' callerid = '.(isset($this->callerid)?$this->callerid:"null");
 
         
 		$sql .= ' WHERE rowid=' . $this->id;
@@ -433,7 +443,7 @@ class Helpdeskticket extends CommonObject
 	 *
 	 * @return int <0 if KO, >0 if OK
 	 */
-	public function delete(User $user, $notrigger = false)
+	public function delete()
 	{
 		dol_syslog(__METHOD__, LOG_DEBUG);
 
@@ -638,6 +648,7 @@ class Helpdeskticket extends CommonObject
 		$this->state = '';
 		$this->title = '';
 		$this->description = '';
+		$this->callerid = '';
 
 		
 	}
@@ -666,6 +677,7 @@ class HelpdeskticketLine
 	public $state;
 	public $title;
 	public $description;
+	public $callerid;
 
 	/**
 	 * @var mixed Sample line property 2

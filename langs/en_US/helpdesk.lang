@@ -1,5 +1,7 @@
 HelpdeskCreateNew=Create incident
 HelpdeskCaller=Caller
+HelpdeskAssignedTo=Assigned To
+HelpdeskAnswer=Anwser
 HelpdeskShortDescription=Short Description
 HelpdeskLongDescription=Description of the demand
 HelpDeskListOfTickets=List of Tickets
@@ -9,3 +11,10 @@ HelpdeskDateCreation=Created on
 HelpdeskTicketState=State
 HelpdeskPrivateComment=Private comment
 HelpdeskPublicComment=Public comment
+HelpdeskOpenTicket=Open new ticket
+HelpdeskStateNew=New
+HelpdeskStateAwaitingOperator=Awaiting Operator
+HelpdeskStateAwaitingCustomer=Awaiting Customer
+HelpdeskStateAwaitingEditor=Awaiting editor
+HelpdeskStateSolved=Solved
+

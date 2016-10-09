@@ -1,1 +1,20 @@
-HelpdeskCreateNew=Création d'un incident
+HelpdeskCreateNew=Créer un ticket
+HelpdeskCaller=Appelant
+HelpdeskAssignedTo=Assigné à
+HelpdeskAnswer=Répondre
+HelpdeskShortDescription=Description courte
+HelpdeskLongDescription=Description de la demande
+HelpDeskListOfTickets=Liste des tickets
+HelpDeskTicketNumber=Numéro
+HelpdeskCreatedBy=Ouvert par
+HelpdeskDateCreation=Créé le
+HelpdeskTicketState=Etat
+HelpdeskPrivateComment=Note de travail
+HelpdeskPublicComment=Commentaire public
+HelpdeskOpenTicket=Ouvrir un ticket
+HelpdeskStateNew=Nouveaux
+HelpdeskStateAwaitingOperator=Attente opérateur
+HelpdeskStateAwaitingCustomer=Attente client
+HelpdeskStateAwaitingEditor=Attente editeur/constructeur
+HelpdeskStateSolved=Résolus
+

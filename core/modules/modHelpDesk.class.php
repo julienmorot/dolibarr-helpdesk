@@ -337,7 +337,7 @@ class modHelpDesk extends DolibarrModules
 */
 		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=helpdesk',
 			'type'=>'left',
-			'titre'=>'Déclarer',
+			'titre'=>$langs->trans("HelpdeskOpenTicket"),
 			'mainmenu'=>'helpdesk',
 			'leftmenu'=>'helpdesk',
 			'url'=>'/helpdesk/create.php',
@@ -350,7 +350,7 @@ class modHelpDesk extends DolibarrModules
 		$r++;
 		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=helpdesk',
 			'type'=>'left',
-			'titre'=>'Nouveaux',
+			'titre'=>$langs->trans("HelpdeskStateNew"),
 			'mainmenu'=>'helpdesk',
 			'leftmenu'=>'helpdesk',
 			'url'=>'/helpdesk/list.php?state=0',
@@ -363,7 +363,7 @@ class modHelpDesk extends DolibarrModules
 		$r++;
 		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=helpdesk',
 			'type'=>'left',
-			'titre'=>'Attente opérateur',
+			'titre'=>$langs->trans("HelpdeskStateAwaitingOperator"),
 			'mainmenu'=>'helpdesk',
 			'leftmenu'=>'helpdesk',
 			'url'=>'/helpdesk/list.php?state=1',
@@ -376,7 +376,7 @@ class modHelpDesk extends DolibarrModules
 		$r++;
 		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=helpdesk',
 			'type'=>'left',
-			'titre'=>'Attente utilisateur',
+			'titre'=>$langs->trans("HelpdeskStateAwaitingCustomer"),
 			'mainmenu'=>'helpdesk',
 			'leftmenu'=>'helpdesk',
 			'url'=>'/helpdesk/list.php?state=2',
@@ -389,7 +389,7 @@ class modHelpDesk extends DolibarrModules
 		$r++;
 		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=helpdesk',
 			'type'=>'left',
-			'titre'=>'Attente client',
+			'titre'=>$langs->trans("HelpdeskStateAwaitingEditor"),
 			'mainmenu'=>'helpdesk',
 			'leftmenu'=>'helpdesk',
 			'url'=>'/helpdesk/list.php?state=3',
@@ -402,25 +402,12 @@ class modHelpDesk extends DolibarrModules
 		$r++;
 		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=helpdesk',
 			'type'=>'left',
-			'titre'=>'Attente Editeur/Constructeur',
+			'titre'=>$langs->trans("HelpdeskStateSolved"),
 			'mainmenu'=>'helpdesk',
 			'leftmenu'=>'helpdesk',
 			'url'=>'/helpdesk/list.php?state=4',
 			'langs'=>'helpdesk@helpdesk',
 			'position'=>160,
-			'enabled'=>'1',
-			'perms'=>'1',
-			'target'=>'',
-			'user'=>0);
-		$r++;
-		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=helpdesk',
-			'type'=>'left',
-			'titre'=>'Resolved',
-			'mainmenu'=>'helpdesk',
-			'leftmenu'=>'helpdesk',
-			'url'=>'/helpdesk/list.php?state=5',
-			'langs'=>'helpdesk@helpdesk',
-			'position'=>170,
 			'enabled'=>'1',
 			'perms'=>'1',
 			'target'=>'',
