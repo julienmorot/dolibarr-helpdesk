@@ -30,6 +30,10 @@ if ($action == 'update') {
     $db->query($sql);
     $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set state='.GETPOST('state','int').' WHERE rowid='.$ticket.';';
     $db->query($sql);
+
+    $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set category='.GETPOST('category','int').' WHERE rowid='.$ticket.';';
+    $db->query($sql);
+
     $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set title="'.GETPOST('ticket_shortdesc','alpha').'" WHERE rowid='.$ticket.';';
     $db->query($sql);
     $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set description="'.GETPOST('ticket_longdescription','alpha').'" WHERE rowid='.$ticket.';';
@@ -39,12 +43,16 @@ if ($action == 'update') {
     $db->query($sql);
 
     if ( ( (GETPOST('ticket_private_comment','alpha') != "" )) || ( (GETPOST('ticket_public_comment','alpha') != "")) ) {
+        $tcmin=(int)GETPOST('timecard_minutes','alpha');
+        $tchour=60*(int)GETPOST('timecard_hour','int');
+        $tc=$tcmin+$tchour;
         $object = new Helpdeskcomment($db);
         $object->datec = time();
         $object->userid = GETPOST("commercial_suivi_id");
         $object->ticketid = $ticket;
         $object->pubdesc = GETPOST('ticket_public_comment','alpha');
         $object->privdesc = GETPOST('ticket_private_comment','alpha');
+        $object->timecard=$tc;
         $object->create();
     }
 
@@ -79,29 +87,48 @@ print $form->select_company($obj->entity,'socid','',1);
 print '</td>';
 print '</tr>'."\n";
 
-// FIXME : un select ça ne serait pas de refus
+print '<tr><td width="20%" class="nowrap"><span class="fieldrequired">'.$langs->trans("HelpdeskCaller").'</span></td><td>';
+print $form->selectcontacts($obj->entity,$obj->callerid,'contactid',2,'','',1,'',false,1);
+print '</td></tr>';
+
 print '<tr><td class="fieldrequired">'.$langs->trans('HelpdeskTicketState').'</td>';
 print '<td colspan="2">';
 print '<select name="state" value="'.$obj->state.'">';
-print '    <option value="0">'.$langs->trans("HelpdeskStateNew").'</option>';
-print '    <option value="1">'.$langs->trans("HelpdeskStateAwaitingOperator").'</option>';
-print '    <option value="2">'.$langs->trans("HelpdeskStateAwaitingCustomer").'</option>';
-print '    <option value="3">'.$langs->trans("HelpdeskStateAwaitingEditor").'</option>';
-print '    <option value="4">'.$langs->trans("HelpdeskStateSolved").'</option>';
+if ($obj->state == 0) { $selected="selected";} else { $selected = ""; }
+print '    <option '.$selected.' value="0">'.$langs->trans("HelpdeskStateNew").'</option>';
+if ($obj->state == 1) { $selected="selected";} else { $selected = ""; }
+print '    <option '.$selected.' value="1">'.$langs->trans("HelpdeskStateAwaitingOperator").'</option>';
+if ($obj->state == 2) { $selected="selected";} else { $selected = ""; }
+print '    <option '.$selected.' value="2">'.$langs->trans("HelpdeskStateAwaitingCustomer").'</option>';
+if ($obj->state == 3) { $selected="selected";} else { $selected = ""; }
+print '    <option '.$selected.' value="3">'.$langs->trans("HelpdeskStateAwaitingEditor").'</option>';
+if ($obj->state == 4) { $selected="selected";} else { $selected = ""; }
+print '    <option '.$selected.' value="4">'.$langs->trans("HelpdeskStateSolved").'</option>';
 print '</select>';
 print '</td>';
 print '</tr>'."\n";
+
+print '<tr><td class="fieldrequired">'.$langs->trans('HelpdeskTicketCategory').'</td>';
+print '<td colspan="2">';
+print '<select name="category" value="'.$obj->category.'">';
+if ($obj->category == 0) { $selected="selected";} else { $selected = ""; }
+print '    <option '.$selected.' value="0">'.$langs->trans("HelpdeskCategoryNone").'</option>';
+if ($obj->category == 1) { $selected="selected";} else { $selected = ""; }
+print '    <option '.$selected.' value="1">'.$langs->trans("HelpdeskCategoryIncident").'</option>';
+if ($obj->category == 2) { $selected="selected";} else { $selected = ""; }
+print '    <option '.$selected.' value="2">'.$langs->trans("HelpdeskCategoryRequest").'</option>';
+if ($obj->category == 3) { $selected="selected";} else { $selected = ""; }
+print '    <option '.$selected.' value="3">'.$langs->trans("HelpdeskCategoryChange").'</option>';
+print '</select>';
+print '</td>';
+print '</tr>'."\n";
+
 
 print '<tr><td width="20%" class="nowrap"><span class="fieldrequired">'.$langs->trans("HelpdeskAssignedTo").'</span></td><td>';
 print $form->select_dolusers($obj->createdby,'commercial_suivi_id',1,'');
 print '</td></tr>';
 print '<tr><td class="filedrequired">'.$langs->trans('HelpdeskShortDescription').'</td>';
 print '<td colspan="2"><input type="text" size="150" name="ticket_shortdesc" id="ticket_shortdescref_customer" value="'.$obj->title.'"></td></tr>'."\n";
-
-print '<tr><td width="20%" class="nowrap"><span class="fieldrequired">'.$langs->trans("HelpdeskCaller").'</span></td><td>';
-print $form->selectcontacts($obj->entity,$obj->callerid,'contactid',2,'','',1,'',false,1);
-print '</td></tr>';
-
 
 print '<tr><td>'.$langs->trans("HelpdeskLongDescription").'</td><td valign="top">';
 
@@ -113,9 +140,48 @@ print '<td><textarea style="color: black; background-color: #ffff99" id="ticket_
 print '<tr><td>'.$langs->trans("HelpdeskPublicComment").'</td>';
 print '<td colspan="2"><textarea id="ticket_public_comment" name="ticket_public_comment" rows="8" cols="100" class="flat"></textarea></td></tr>';
 
+print '<tr><td>'.$langs->trans("HelpdeskTimeCard").'</td><td><div align="center">';
+print '<select name="timecard_hour">';
+for ($i=0;$i<24;$i++) {
+print '    <option value="'.$i.'"">'.$i.'</option>';
+}
+print '</select>';
+
+print '<select name="timecard_minutes">';
+print '    <option value="00">00</option>';
+print '    <option value="10">10</option>';
+print '    <option value="20">20</option>';
+print '    <option value="30">30</option>';
+print '    <option value="40">40</option>';
+print '    <option value="50">50</option>';
+print '</select>';
+print '</div></td></tr>';
+
+print '<tr><td>'.$langs->trans("HelpdeskTechProfile").'</td><td><div align="center">';
+print '<select name="tech_profile">';
+print '    <option value="0">'.$langs->trans("HelpdeskTechProfileWorkshop").'</option>';
+print '    <option value="1">'.$langs->trans("HelpdeskTechProfileTech").'</option>';
+print '    <option value="2">'.$langs->trans("HelpdeskTechProfileEngineer").'</option>';
+print '</select>';
+print '</div></td></tr>';
+
+print '<tr><td>'.$langs->trans("HelpdeskTechProfile").'</td><td><div align="center">';
+print $form->select_contract('', $obj->entity,'','contract');
+print '</div></td></tr>';
+
+
+
+
 print '<tr><td colspan="2"><br /><div align="center"><input type="submit" class="button" value="'.$langs->trans("Update").'"></div></td></tr>';
 
 print "</form>\n";
+
+print "</table>\n";
+
+
+print "<br /><br /><br />";
+
+print "<table>\n";
 
 $sql="SELECT c.rowid, c.userid, c.datec, c.pubdesc, c.privdesc, u.firstname, u.lastname ";
 $sql.= 'FROM '.MAIN_DB_PREFIX."helpdesk_comment as c, ";
@@ -132,10 +198,10 @@ if ($result)
     while ($obj = $db->fetch_object($result)) {
         print "<tr>";
         print '<td>'.$obj->firstname.' '.$obj->lastname.' - '.date( 'Y-m-d H:i:s', strtotime($obj->datec)).'</td>';
-        print '<td style="color: black; background-color: #ffff99">'.$obj->privdesc.'</td>';
+        print '<td><textarea rows="8" cols="100" style="color: black; background-color: #ffff99">'.$obj->privdesc.'</textarea></td>';
         print "<tr>";
         print '<td>'.$obj->firstname.' '.$obj->lastname.' - '.date( 'Y-m-d H:i:s', strtotime($obj->datec)).'</td>';
-        print '<td>'.$obj->pubdesc.'</td>';
+        print '<td><textarea rows="8" cols="100">'.$obj->pubdesc.'</textarea></td>';
         print '<tr><td></td><td></td></tr>';
     }
 }

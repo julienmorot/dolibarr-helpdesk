@@ -66,6 +66,7 @@ class Helpdeskticket extends CommonObject
 	public $title;
 	public $description;
 	public $callerid;
+	public $category;
 
 	/**
 	 */
@@ -84,6 +85,9 @@ class Helpdeskticket extends CommonObject
 
 	/**
 	 * Create object into database
+	 *
+	 * @param  User $user      User that creates
+	 * @param  bool $notrigger false=launch triggers after, true=disable triggers
 	 *
 	 * @return int <0 if KO, Id of created object if OK
 	 */
@@ -116,6 +120,9 @@ class Helpdeskticket extends CommonObject
 		if (isset($this->callerid)) {
 			 $this->callerid = trim($this->callerid);
 		}
+		if (isset($this->category)) {
+			 $this->category = trim($this->category);
+		}
 
 		
 
@@ -134,7 +141,8 @@ class Helpdeskticket extends CommonObject
 		$sql.= 'state,';
 		$sql.= 'title,';
 		$sql.= 'description,';
-		$sql.= 'callerid';
+		$sql.= 'callerid,';
+		$sql.= 'category';
 
 		
 		$sql .= ') VALUES (';
@@ -148,7 +156,8 @@ class Helpdeskticket extends CommonObject
 		$sql .= ' '.(! isset($this->state)?'NULL':"'".$this->db->escape($this->state)."'").',';
 		$sql .= ' '.(! isset($this->title)?'NULL':"'".$this->db->escape($this->title)."'").',';
 		$sql .= ' '.(! isset($this->description)?'NULL':"'".$this->db->escape($this->description)."'").',';
-		$sql .= ' '.(! isset($this->callerid)?'NULL':$this->callerid);
+		$sql .= ' '.(! isset($this->callerid)?'NULL':$this->callerid).',';
+		$sql .= ' '.(! isset($this->category)?'NULL':$this->category);
 
 		
 		$sql .= ')';
@@ -212,7 +221,8 @@ class Helpdeskticket extends CommonObject
 		$sql .= " t.state,";
 		$sql .= " t.title,";
 		$sql .= " t.description,";
-		$sql .= " t.callerid";
+		$sql .= " t.callerid,";
+		$sql .= " t.category";
 
 		
 		$sql .= ' FROM ' . MAIN_DB_PREFIX . $this->table_element . ' as t';
@@ -240,6 +250,7 @@ class Helpdeskticket extends CommonObject
 				$this->title = $obj->title;
 				$this->description = $obj->description;
 				$this->callerid = $obj->callerid;
+				$this->category = $obj->category;
 
 				
 			}
@@ -286,7 +297,8 @@ class Helpdeskticket extends CommonObject
 		$sql .= " t.state,";
 		$sql .= " t.title,";
 		$sql .= " t.description,";
-		$sql .= " t.callerid";
+		$sql .= " t.callerid,";
+		$sql .= " t.category";
 
 		
 		$sql .= ' FROM ' . MAIN_DB_PREFIX . $this->table_element. ' as t';
@@ -329,6 +341,7 @@ class Helpdeskticket extends CommonObject
 				$line->title = $obj->title;
 				$line->description = $obj->description;
 				$line->callerid = $obj->callerid;
+				$line->category = $obj->category;
 
 				
 
@@ -348,6 +361,7 @@ class Helpdeskticket extends CommonObject
 	/**
 	 * Update object into database
 	 *
+	 * @param  User $user      User that modifies
 	 * @param  bool $notrigger false=launch triggers after, true=disable triggers
 	 *
 	 * @return int <0 if KO, >0 if OK
@@ -381,6 +395,9 @@ class Helpdeskticket extends CommonObject
 		if (isset($this->callerid)) {
 			 $this->callerid = trim($this->callerid);
 		}
+		if (isset($this->category)) {
+			 $this->category = trim($this->category);
+		}
 
 		
 
@@ -399,7 +416,8 @@ class Helpdeskticket extends CommonObject
 		$sql .= ' state = '.(isset($this->state)?"'".$this->db->escape($this->state)."'":"null").',';
 		$sql .= ' title = '.(isset($this->title)?"'".$this->db->escape($this->title)."'":"null").',';
 		$sql .= ' description = '.(isset($this->description)?"'".$this->db->escape($this->description)."'":"null").',';
-		$sql .= ' callerid = '.(isset($this->callerid)?$this->callerid:"null");
+		$sql .= ' callerid = '.(isset($this->callerid)?$this->callerid:"null").',';
+		$sql .= ' category = '.(isset($this->category)?$this->category:"null");
 
         
 		$sql .= ' WHERE rowid=' . $this->id;
@@ -649,6 +667,7 @@ class Helpdeskticket extends CommonObject
 		$this->title = '';
 		$this->description = '';
 		$this->callerid = '';
+		$this->category = '';
 
 		
 	}
@@ -678,6 +697,7 @@ class HelpdeskticketLine
 	public $title;
 	public $description;
 	public $callerid;
+	public $category;
 
 	/**
 	 * @var mixed Sample line property 2

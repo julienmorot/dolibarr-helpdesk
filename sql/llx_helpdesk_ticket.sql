@@ -10,7 +10,8 @@ create table llx_helpdesk_ticket
   state     varchar(20),
   title     varchar(255) NOT NULL,
   description text,
-  callerid integer
+  callerid integer,
+  category smallint
 ) ENGINE=innodb;
 
 

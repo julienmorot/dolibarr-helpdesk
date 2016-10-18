@@ -137,8 +137,8 @@ class modHelpDesk extends DolibarrModules
 		$this->dirs = array();
 
 		// Config pages. Put here list of php pages
-		// stored into HelpDesk/admin directory, used to setup module.
-		$this->config_page_url = array("admin_helpdesk.php@HelpDesk");
+		// stored into helpdesk/admin directory, used to setup module.
+		$this->config_page_url = array("admin_helpdesk.php@helpdesk");
 
 		// Dependencies
 		// A condition to hide module
@@ -335,6 +335,19 @@ class modHelpDesk extends DolibarrModules
 		);
 		$r++;
 */
+        $this->menu[$r]=array(  'fk_menu'=>'fk_mainmenu=helpdesk',
+            'type'=>'left',
+            'titre'=>$langs->trans("HelpdeskStats"),
+            'mainmenu'=>'helpdesk',
+            'leftmenu'=>'helpdesk',
+            'url'=>'/helpdesk/index.php',
+            'langs'=>'helpdesk@helpdesk',
+            'position'=>100,
+            'enabled'=>'1',
+            'perms'=>'1',
+            'target'=>'',
+            'user'=>0);
+        $r++;
 		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=helpdesk',
 			'type'=>'left',
 			'titre'=>$langs->trans("HelpdeskOpenTicket"),
@@ -413,6 +426,20 @@ class modHelpDesk extends DolibarrModules
 			'target'=>'',
 			'user'=>0);
 		$r++;
+        $this->menu[$r]=array(  'fk_menu'=>'fk_mainmenu=helpdesk',
+            'type'=>'left',
+            'titre'=>$langs->trans("HelpdeskServiceContracts"),
+            'mainmenu'=>'helpdesk',
+            'leftmenu'=>'helpdesk',
+            'url'=>'/helpdesk/contracts.php',
+            'langs'=>'helpdesk@helpdesk',
+            'position'=>170,
+            'enabled'=>'1',
+            'perms'=>'1',
+            'target'=>'',
+            'user'=>0);
+        $r++;
+
 		//
 		// Example to declare a Left Menu entry into an existing Top menu entry:
 		//$this->menu[]=array(

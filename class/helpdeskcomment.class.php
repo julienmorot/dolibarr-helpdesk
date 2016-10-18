@@ -61,6 +61,9 @@ class Helpdeskcomment extends CommonObject
 	public $ticketid;
 	public $pubdesc;
 	public $privdesc;
+	public $contractid;
+	public $timecard;
+	public $techprofile;
 
 	/**
 	 */
@@ -74,17 +77,14 @@ class Helpdeskcomment extends CommonObject
 	public function __construct(DoliDB $db)
 	{
 		$this->db = $db;
-		return 1;
 	}
 
 	/**
 	 * Create object into database
 	 *
-	 * @param  bool $notrigger false=launch triggers after, true=disable triggers
-	 *
 	 * @return int <0 if KO, Id of created object if OK
 	 */
-	public function create($notrigger = false)
+	public function create()
 	{
 		dol_syslog(__METHOD__, LOG_DEBUG);
 
@@ -104,6 +104,15 @@ class Helpdeskcomment extends CommonObject
 		if (isset($this->privdesc)) {
 			 $this->privdesc = trim($this->privdesc);
 		}
+		if (isset($this->contractid)) {
+			 $this->contractid = trim($this->contractid);
+		}
+		if (isset($this->timecard)) {
+			 $this->timecard = trim($this->timecard);
+		}
+		if (isset($this->techprofile)) {
+			 $this->techprofile = trim($this->techprofile);
+		}
 
 		
 
@@ -117,7 +126,10 @@ class Helpdeskcomment extends CommonObject
 		$sql.= 'userid,';
 		$sql.= 'ticketid,';
 		$sql.= 'pubdesc,';
-		$sql.= 'privdesc';
+		$sql.= 'privdesc,';
+		$sql.= 'contractid,';
+		$sql.= 'timecard';
+		$sql.= 'techprofile';
 
 		
 		$sql .= ') VALUES (';
@@ -126,7 +138,10 @@ class Helpdeskcomment extends CommonObject
 		$sql .= ' '.(! isset($this->userid)?'NULL':$this->userid).',';
 		$sql .= ' '.(! isset($this->ticketid)?'NULL':$this->ticketid).',';
 		$sql .= ' '.(! isset($this->pubdesc)?'NULL':"'".$this->db->escape($this->pubdesc)."'").',';
-		$sql .= ' '.(! isset($this->privdesc)?'NULL':"'".$this->db->escape($this->privdesc)."'");
+		$sql .= ' '.(! isset($this->privdesc)?'NULL':"'".$this->db->escape($this->privdesc)."'").',';
+		$sql .= ' '.(! isset($this->contractid)?'NULL':$this->contractid).',';
+		$sql .= ' '.(! isset($this->timecard)?'NULL':"'".$this->timecard."'").',';
+		$sql .= ' '.(! isset($this->techprofile)?'NULL':$this->techprofile);
 
 		
 		$sql .= ')';
@@ -185,7 +200,10 @@ class Helpdeskcomment extends CommonObject
 		$sql .= " t.userid,";
 		$sql .= " t.ticketid,";
 		$sql .= " t.pubdesc,";
-		$sql .= " t.privdesc";
+		$sql .= " t.privdesc,";
+		$sql .= " t.contractid,";
+		$sql .= " t.timecard,";
+		$sql .= " t.techprofile";
 
 		
 		$sql .= ' FROM ' . MAIN_DB_PREFIX . $this->table_element . ' as t';
@@ -208,6 +226,9 @@ class Helpdeskcomment extends CommonObject
 				$this->ticketid = $obj->ticketid;
 				$this->pubdesc = $obj->pubdesc;
 				$this->privdesc = $obj->privdesc;
+				$this->contractid = $obj->contractid;
+				$this->timecard = $obj->timecard;
+				$this->techprofile = $obj->techprofile;
 
 				
 			}
@@ -249,7 +270,10 @@ class Helpdeskcomment extends CommonObject
 		$sql .= " t.userid,";
 		$sql .= " t.ticketid,";
 		$sql .= " t.pubdesc,";
-		$sql .= " t.privdesc";
+		$sql .= " t.privdesc,";
+		$sql .= " t.contractid,";
+		$sql .= " t.timecard,";
+		$sql .= " t.techprofile";
 
 		
 		$sql .= ' FROM ' . MAIN_DB_PREFIX . $this->table_element. ' as t';
@@ -287,10 +311,13 @@ class Helpdeskcomment extends CommonObject
 				$line->ticketid = $obj->ticketid;
 				$line->pubdesc = $obj->pubdesc;
 				$line->privdesc = $obj->privdesc;
+				$line->contractid = $obj->contractid;
+				$line->timecard = $obj->timecard;
+				$line->techprofile = $obj->techprofile;
 
 				
 
-				$this->lines[] = $line;
+				$this->lines[$line->id] = $line;
 			}
 			$this->db->free($resql);
 
@@ -306,12 +333,9 @@ class Helpdeskcomment extends CommonObject
 	/**
 	 * Update object into database
 	 *
-	 * @param  User $user      User that modifies
-	 * @param  bool $notrigger false=launch triggers after, true=disable triggers
-	 *
 	 * @return int <0 if KO, >0 if OK
 	 */
-	public function update(User $user, $notrigger = false)
+	public function update()
 	{
 		$error = 0;
 
@@ -331,6 +355,15 @@ class Helpdeskcomment extends CommonObject
 		if (isset($this->privdesc)) {
 			 $this->privdesc = trim($this->privdesc);
 		}
+		if (isset($this->contractid)) {
+			 $this->contractid = trim($this->contractid);
+		}
+		if (isset($this->timecard)) {
+			 $this->timecard = trim($this->timecard);
+		}
+		if (isset($this->techprofile)) {
+			 $this->techprofile = trim($this->techprofile);
+		}
 
 		
 
@@ -344,7 +377,10 @@ class Helpdeskcomment extends CommonObject
 		$sql .= ' userid = '.(isset($this->userid)?$this->userid:"null").',';
 		$sql .= ' ticketid = '.(isset($this->ticketid)?$this->ticketid:"null").',';
 		$sql .= ' pubdesc = '.(isset($this->pubdesc)?"'".$this->db->escape($this->pubdesc)."'":"null").',';
-		$sql .= ' privdesc = '.(isset($this->privdesc)?"'".$this->db->escape($this->privdesc)."'":"null");
+		$sql .= ' privdesc = '.(isset($this->privdesc)?"'".$this->db->escape($this->privdesc)."'":"null").',';
+		$sql .= ' contractid = '.(isset($this->contractid)?$this->contractid:"null").',';
+		$sql .= ' timecard = '.(isset($this->timecard)?$this->timecard:"null").',';
+		$sql .= ' techprofile = '.(isset($this->techprofile)?$this->techprofile:"null");
 
         
 		$sql .= ' WHERE rowid=' . $this->id;
@@ -383,12 +419,9 @@ class Helpdeskcomment extends CommonObject
 	/**
 	 * Delete object in database
 	 *
-	 * @param User $user      User that deletes
-	 * @param bool $notrigger false=launch triggers after, true=disable triggers
-	 *
 	 * @return int <0 if KO, >0 if OK
 	 */
-	public function delete(User $user, $notrigger = false)
+	public function delete()
 	{
 		dol_syslog(__METHOD__, LOG_DEBUG);
 
@@ -589,6 +622,9 @@ class Helpdeskcomment extends CommonObject
 		$this->ticketid = '';
 		$this->pubdesc = '';
 		$this->privdesc = '';
+		$this->contractid = '';
+		$this->timecard = '';
+		$this->techprofile = '';
 
 		
 	}
@@ -613,6 +649,9 @@ class HelpdeskcommentLine
 	public $ticketid;
 	public $pubdesc;
 	public $privdesc;
+	public $contractid;
+	public $timecard;
+	public $techprofile;
 
 	/**
 	 * @var mixed Sample line property 2

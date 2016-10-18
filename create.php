@@ -26,6 +26,7 @@ if ($action == 'add') {
 	$object->title = GETPOST('ticket_shortdesc','alpha');
 	$object->description = GETPOST('ticket_longdescription','alpha');
     $object->callerid = GETPOST("contactid", "int");
+    $object->category = GETPOST("category", "int");
 	$object->create();
 } else {
 
@@ -51,6 +52,18 @@ print '</td></tr>';
 print '<tr><td width="20%" class="nowrap"><span class="fieldrequired">'.$langs->trans("HelpdeskAssignedTo").'</span></td><td>';
 print $form->select_dolusers(GETPOST("commercial_suivi_id")?GETPOST("commercial_suivi_id"):$user->id,'commercial_suivi_id',1,'');
 print '</td></tr>';
+
+print '<tr><td class="fieldrequired">'.$langs->trans('HelpdeskTicketCategory').'</td>';
+print '<td colspan="2">';
+print '<select name="category" value="0">';
+print '    <option value="0">'.$langs->trans("HelpdeskCategoryNone").'</option>';
+print '    <option value="1">'.$langs->trans("HelpdeskCategoryIncident").'</option>';
+print '    <option value="2">'.$langs->trans("HelpdeskCategoryRequest").'</option>';
+print '    <option value="3">'.$langs->trans("HelpdeskCategoryChange").'</option>';
+print '</select>';
+print '</td>';
+print '</tr>'."\n";
+
 
 print '<tr><td class="filedrequired">'.$langs->trans('HelpdeskShortDescription').'</td>';
 print '<td colspan="2"><input type="text" size="150" name="ticket_shortdesc" id="ticket_shortdescref_customer"></td></tr>';

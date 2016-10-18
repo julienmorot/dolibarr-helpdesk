@@ -17,4 +17,21 @@ HelpdeskStateAwaitingOperator=Attente opérateur
 HelpdeskStateAwaitingCustomer=Attente client
 HelpdeskStateAwaitingEditor=Attente editeur/constructeur
 HelpdeskStateSolved=Résolus
+HelpdeskTicketCategory=Catégorie
+HelpdeskCategoryNone=Aucune
+HelpdeskCategoryIncident=Incident
+HelpdeskCategoryRequest=Demande standard
+HelpdeskCategoryChange=Changement
+HelpdeskSetup=Configuration du module de helpdesk
+HelpdeskMailbox=Boite mail pour le support
+HelpdeskTimeCard=Feuille de temps
+HelpdeskStats=Statistiques
+HelpdeskServiceContracts=Contrats de maintenance
+HelpdeskTechProfile=Profil technique de l'intervention
+HelpdeskTechProfileWorkshop=Atelier
+HelpdeskTechProfileTech=Technicien
+HelpdeskTechProfileEngineer=Ingénieur
+HelpdeskServiceContract=Contrat de maintenance
+
+
 

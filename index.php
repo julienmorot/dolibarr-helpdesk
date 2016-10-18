@@ -36,10 +36,44 @@ print '</div>';
 
 
 print '<div class="fichetwothirdright"><div class="ficheaddleft">';
-
-
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
+print '<td colspan="2">'.$langs->trans("HelpdeskStats").'</td></tr>';
+
+
+$sql="select count(rowid) as number, state from llx_helpdesk_ticket group by state;";
+$result = $db->query($sql);
+if ($result)
+{
+    $num = $db->num_rows($result);
+    $i = 0;
+    while ($i < $num)
+    {
+        $obj = $db->fetch_object($result);
+        print "<tr><td>";
+switch ($obj->state) {
+    case 0:
+        print $langs->trans("HelpdeskStateNew");
+        break;
+    case 1:
+        print $langs->trans("HelpdeskStateAwaitingOperator");
+        break;
+    case 2:
+        print $langs->trans("HelpdeskStateAwaitingCustomer");
+        break;
+    case 3:
+        print $langs->trans("HelpdeskStateAwaitingEditor");
+        break;
+    case 4:
+        print $langs->trans("HelpdeskStateSolved");
+        break;
+}
+        print '</td><td>'.$obj->number.'</td>';
+        $i++;
+    }
+
+}
+print '</table>';
 
 print '</div>';
 
