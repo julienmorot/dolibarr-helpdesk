@@ -128,7 +128,7 @@ class Helpdeskcomment extends CommonObject
 		$sql.= 'pubdesc,';
 		$sql.= 'privdesc,';
 		$sql.= 'contractid,';
-		$sql.= 'timecard';
+		$sql.= 'timecard,';
 		$sql.= 'techprofile';
 
 		

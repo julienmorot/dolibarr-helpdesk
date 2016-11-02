@@ -32,6 +32,9 @@ HelpdeskTechProfileWorkshop=Atelier
 HelpdeskTechProfileTech=Technicien
 HelpdeskTechProfileEngineer=Ingénieur
 HelpdeskServiceContract=Contrat de maintenance
+HelpdeskFromDate=du
+HelpdeskToDate=au
+
 
 
 

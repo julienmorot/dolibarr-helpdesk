@@ -32,3 +32,6 @@ HelpdeskTechProfileWorkshop=Workshop
 HelpdeskTechProfileTech=Technician
 HelpdeskTechProfileEngineer=Engineer
 HelpdeskServiceContract=Service contract
+HelpdeskFromDate=from
+HelpdeskToDate=to
+

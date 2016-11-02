@@ -6,18 +6,21 @@ require_once DOL_DOCUMENT_ROOT.'/helpdesk/class/helpdeskcomment.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcontract.class.php';
+require_once DOL_DOCUMENT_ROOT.'/contrat/class/contrat.class.php';
+require_once DOL_DOCUMENT_ROOT.'/helpdesk/points.php';
+
+llxHeader("","Helpdesk");
+
+print load_fiche_titre($langs->trans('HelpdeskAnswer'),'','title_commercial.png');
+
 
 $langs->load("helpdesk");
 $langs->load("contracts");
 $langs->load("companies");
 $action=GETPOST('action','alpha');
 $ticket=GETPOST('ticket','int');
-
-
-llxHeader("","Helpdesk");
-
-print load_fiche_titre($langs->trans('HelpdeskAnswer'),'','title_commercial.png');
-
 
 
 //FIXME : Update pas optimal du tout!
@@ -46,6 +49,10 @@ if ($action == 'update') {
         $tcmin=(int)GETPOST('timecard_minutes','alpha');
         $tchour=60*(int)GETPOST('timecard_hour','int');
         $tc=$tcmin+$tchour;
+        $pnumber=0;
+        $pnumber=count_points($tc,GETPOST('techprofile','int'));
+        update_contract_points($db, GETPOST('contractid','int'), $pnumber);
+
         $object = new Helpdeskcomment($db);
         $object->datec = time();
         $object->userid = GETPOST("commercial_suivi_id");
@@ -53,7 +60,9 @@ if ($action == 'update') {
         $object->pubdesc = GETPOST('ticket_public_comment','alpha');
         $object->privdesc = GETPOST('ticket_private_comment','alpha');
         $object->timecard=$tc;
-        $object->create();
+        $object->contractid=GETPOST('contractid','int');
+        $object->techprofile=GETPOST('techprofile','int');
+        $ret = $object->create();
     }
 
 } else {
@@ -69,7 +78,6 @@ $result = $db->query($sql);
 if ($result) {
    $obj = $db->fetch_object($result);
 }
-
 
 
 print '<form name="form_ticket" action="'.$_SERVER["PHP_SELF"].'" method="post">';
@@ -158,15 +166,23 @@ print '</select>';
 print '</div></td></tr>';
 
 print '<tr><td>'.$langs->trans("HelpdeskTechProfile").'</td><td><div align="center">';
-print '<select name="tech_profile">';
+print '<select name="techprofile">';
 print '    <option value="0">'.$langs->trans("HelpdeskTechProfileWorkshop").'</option>';
 print '    <option value="1">'.$langs->trans("HelpdeskTechProfileTech").'</option>';
 print '    <option value="2">'.$langs->trans("HelpdeskTechProfileEngineer").'</option>';
 print '</select>';
 print '</div></td></tr>';
 
-print '<tr><td>'.$langs->trans("HelpdeskTechProfile").'</td><td><div align="center">';
-print $form->select_contract('', $obj->entity,'','contract');
+print '<tr><td>'.$langs->trans("HelpdeskServiceContract").'</td><td><div align="center">';
+print '<select name="contractid">';
+$contracts=contract_list_for_company($db,$obj->entity);
+foreach ($contracts as $contract) {
+print '    <option value="'.$contract->rowid.'">';
+print '    '.$contract->label.' - '.$langs->trans("HelpdeskFromDate").' '.$contract->dateo.' '.$langs->trans("HelpdeskToDate").' '.$contract->datef.' ('.$contract->pcur.'/'.$contract->pinit.')';
+print '    </option>';
+}
+print '</select>';
+
 print '</div></td></tr>';
 
 
@@ -196,13 +212,21 @@ $result = $db->query($sql);
 if ($result)
 {
     while ($obj = $db->fetch_object($result)) {
-        print "<tr>";
-        print '<td>'.$obj->firstname.' '.$obj->lastname.' - '.date( 'Y-m-d H:i:s', strtotime($obj->datec)).'</td>';
-        print '<td><textarea rows="8" cols="100" style="color: black; background-color: #ffff99">'.$obj->privdesc.'</textarea></td>';
-        print "<tr>";
-        print '<td>'.$obj->firstname.' '.$obj->lastname.' - '.date( 'Y-m-d H:i:s', strtotime($obj->datec)).'</td>';
-        print '<td><textarea rows="8" cols="100">'.$obj->pubdesc.'</textarea></td>';
-        print '<tr><td></td><td></td></tr>';
+        print '<tr>';
+        print '<td>'.$obj->firstname.' '.$obj->lastname.'<br />';
+        print date( 'Y-m-d H:i:s', strtotime($obj->datec)).'<br />';
+        print '</td>';
+        print '</tr>';
+
+        if ($obj->privdesc != "") {
+            print '<tr><td></td><td><textarea rows="8" cols="100" style="color: black; background-color: #ffff99">'.$obj->privdesc.'</textarea></td></tr>';
+        }
+        if ($obj->pubdesc != "") {
+            print '<tr>';
+            print '<td></td>';
+            print '<td><textarea rows="8" cols="100">'.$obj->pubdesc.'</textarea></td>';
+            print '</tr>';
+        }
     }
 }
 

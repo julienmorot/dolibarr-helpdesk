@@ -28,6 +28,7 @@ if ($action == 'add') {
     $object->callerid = GETPOST("contactid", "int");
     $object->category = GETPOST("category", "int");
 	$object->create();
+    header('Location: /helpdesk/list.php?state=0');
 } else {
 
 

@@ -431,7 +431,7 @@ class modHelpDesk extends DolibarrModules
             'titre'=>$langs->trans("HelpdeskServiceContracts"),
             'mainmenu'=>'helpdesk',
             'leftmenu'=>'helpdesk',
-            'url'=>'/helpdesk/contracts.php',
+            'url'=>'/contrat/list.php',
             'langs'=>'helpdesk@helpdesk',
             'position'=>170,
             'enabled'=>'1',
