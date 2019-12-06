@@ -8,6 +8,7 @@ create table llx_helpdesk_comment
   privdesc  text,
   contractid integer,
   timecard  decimal(5,2),
-  techprofile integer
+  techprofile integer,
+  points integer default 0
 ) ENGINE=innodb;
 

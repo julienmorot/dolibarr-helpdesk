@@ -64,6 +64,7 @@ class Helpdeskcomment extends CommonObject
 	public $contractid;
 	public $timecard;
 	public $techprofile;
+	public $points;
 
 	/**
 	 */
@@ -113,6 +114,9 @@ class Helpdeskcomment extends CommonObject
 		if (isset($this->techprofile)) {
 			 $this->techprofile = trim($this->techprofile);
 		}
+		if (isset($this->points)) {
+			 $this->points = trim($this->points);
+		}
 
 		
 
@@ -129,7 +133,8 @@ class Helpdeskcomment extends CommonObject
 		$sql.= 'privdesc,';
 		$sql.= 'contractid,';
 		$sql.= 'timecard,';
-		$sql.= 'techprofile';
+		$sql.= 'techprofile,';
+		$sql.= 'points';
 
 		
 		$sql .= ') VALUES (';
@@ -141,7 +146,8 @@ class Helpdeskcomment extends CommonObject
 		$sql .= ' '.(! isset($this->privdesc)?'NULL':"'".$this->db->escape($this->privdesc)."'").',';
 		$sql .= ' '.(! isset($this->contractid)?'NULL':$this->contractid).',';
 		$sql .= ' '.(! isset($this->timecard)?'NULL':"'".$this->timecard."'").',';
-		$sql .= ' '.(! isset($this->techprofile)?'NULL':$this->techprofile);
+		$sql .= ' '.(! isset($this->techprofile)?'NULL':$this->techprofile).',';
+		$sql .= ' '.(! isset($this->points)?'NULL':$this->points);
 
 		
 		$sql .= ')';
@@ -203,7 +209,8 @@ class Helpdeskcomment extends CommonObject
 		$sql .= " t.privdesc,";
 		$sql .= " t.contractid,";
 		$sql .= " t.timecard,";
-		$sql .= " t.techprofile";
+		$sql .= " t.techprofile,";
+		$sql .= " t.points";
 
 		
 		$sql .= ' FROM ' . MAIN_DB_PREFIX . $this->table_element . ' as t';
@@ -229,6 +236,7 @@ class Helpdeskcomment extends CommonObject
 				$this->contractid = $obj->contractid;
 				$this->timecard = $obj->timecard;
 				$this->techprofile = $obj->techprofile;
+				$this->points = $obj->points;
 
 				
 			}
@@ -273,7 +281,8 @@ class Helpdeskcomment extends CommonObject
 		$sql .= " t.privdesc,";
 		$sql .= " t.contractid,";
 		$sql .= " t.timecard,";
-		$sql .= " t.techprofile";
+		$sql .= " t.techprofile,";
+		$sql .= " t.points";
 
 		
 		$sql .= ' FROM ' . MAIN_DB_PREFIX . $this->table_element. ' as t';
@@ -314,6 +323,7 @@ class Helpdeskcomment extends CommonObject
 				$line->contractid = $obj->contractid;
 				$line->timecard = $obj->timecard;
 				$line->techprofile = $obj->techprofile;
+				$line->points = $obj->points;
 
 				
 
@@ -364,6 +374,9 @@ class Helpdeskcomment extends CommonObject
 		if (isset($this->techprofile)) {
 			 $this->techprofile = trim($this->techprofile);
 		}
+		if (isset($this->points)) {
+			 $this->points = trim($this->points);
+		}
 
 		
 
@@ -380,7 +393,8 @@ class Helpdeskcomment extends CommonObject
 		$sql .= ' privdesc = '.(isset($this->privdesc)?"'".$this->db->escape($this->privdesc)."'":"null").',';
 		$sql .= ' contractid = '.(isset($this->contractid)?$this->contractid:"null").',';
 		$sql .= ' timecard = '.(isset($this->timecard)?$this->timecard:"null").',';
-		$sql .= ' techprofile = '.(isset($this->techprofile)?$this->techprofile:"null");
+		$sql .= ' techprofile = '.(isset($this->techprofile)?$this->techprofile:"null").',';
+		$sql .= ' points = '.(isset($this->points)?$this->points:"null");
 
         
 		$sql .= ' WHERE rowid=' . $this->id;
@@ -625,6 +639,7 @@ class Helpdeskcomment extends CommonObject
 		$this->contractid = '';
 		$this->timecard = '';
 		$this->techprofile = '';
+		$this->points = '';
 
 		
 	}
@@ -652,6 +667,7 @@ class HelpdeskcommentLine
 	public $contractid;
 	public $timecard;
 	public $techprofile;
+	public $points;
 
 	/**
 	 * @var mixed Sample line property 2

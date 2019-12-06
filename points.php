@@ -51,6 +51,24 @@ function update_contract_points($db, $contractid, $number) {
     $result = $db->query($sql);
 }
 
+//FIXME : translate
+function getProfileNameFromID($techprofileid) {
+    switch($techprofileid) {
+        // workshop
+        case 0:
+            return "Atelier";
+            break;
+        // tech
+        case 1:
+            return "Technicien";
+            break;
+        //engineer
+        case 2:
+            return "Ingénieur";
+            break;
+    }
+}
+
 
 
 

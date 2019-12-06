@@ -11,9 +11,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcontract.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contrat/class/contrat.class.php';
 require_once DOL_DOCUMENT_ROOT.'/helpdesk/points.php';
 
-llxHeader("","Helpdesk");
-
-print load_fiche_titre($langs->trans('HelpdeskAnswer'),'','title_commercial.png');
+require_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/modules/fichinter/modules_fichinter.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/fichinter.lib.php';
 
 
 $langs->load("helpdesk");
@@ -34,6 +34,12 @@ if ($action == 'update') {
     $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set state='.GETPOST('state','int').' WHERE rowid='.$ticket.';';
     $db->query($sql);
 
+    if (GETPOST('state','int') == 4) {
+        $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set datem=NOW() WHERE rowid='.$ticket.';';
+        $db->query($sql);
+
+    }
+
     $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set category='.GETPOST('category','int').' WHERE rowid='.$ticket.';';
     $db->query($sql);
 
@@ -44,6 +50,7 @@ if ($action == 'update') {
     
     $sql='UPDATE '.MAIN_DB_PREFIX.'helpdesk_ticket set datem=NOW() WHERE rowid='.$ticket.';';
     $db->query($sql);
+    
 
     if ( ( (GETPOST('ticket_private_comment','alpha') != "" )) || ( (GETPOST('ticket_public_comment','alpha') != "")) ) {
         $tcmin=(int)GETPOST('timecard_minutes','alpha');
@@ -62,10 +69,54 @@ if ($action == 'update') {
         $object->timecard=$tc;
         $object->contractid=GETPOST('contractid','int');
         $object->techprofile=GETPOST('techprofile','int');
+        $object->points=$pnumber;
         $ret = $object->create();
     }
 
+    header('Location: /helpdesk/');
+
+} elseif ($action == "inter") {
+  $fiobject = new Fichinter($db);
+//  $fiextrafields = new ExtraFields($db);
+//  $fiextralabels=$extrafields->fetch_name_optionals_label($object->table_element);
+  #$fiobject->socid = GETPOST('socid','int');
+  $ticketnum=GETPOST('ticket','int');
+  $commentnum=GETPOST('comment','int');
+  $sqlt="SELECT * FROM ".MAIN_DB_PREFIX."helpdesk_ticket  WHERE rowid=".$ticketnum.";";
+  $sqlc="SELECT * FROM ".MAIN_DB_PREFIX."helpdesk_comment  WHERE rowid=".$commentnum.";";
+
+  $resultt = $db->query($sqlt);
+  if ($resultt) {
+    $objt = $db->fetch_object($resultt);
+  }
+
+  $resultc = $db->query($sqlc);
+  if ($resultc) {
+    $objc = $db->fetch_object($resultc);
+  }
+
+  $fiobject->socid          = $objt->entity;
+  $fiobject->duration       = intval($objc->timecard);
+  $fiobject->fk_contrat     = $objc->contractid;
+  $fiobject->author         = $user->id;
+  $fiobject->description    = $objt->title;
+//  $fiobject->note_private   = $objc->privdesc;
+  $fiobject->note_public    = $objt->description;
+  $id = $fiobject->create($user);
+
+  $iduree = intval($objc->timecard)*60;
+  $sqlidet="INSERT INTO llx_fichinterdet VALUES (NULL, ".$id.", NULL, '".$objt->datec."', '".$objc->pubdesc."', '".$iduree."', 0);";
+  $db->query($sqlidet);
+  header('Location: /fichinter/card.php?leftmenu=ficheinter&id='.$id);
+
+
+
 } else {
+
+llxHeader("","Helpdesk");
+
+print load_fiche_titre($langs->trans('HelpdeskAnswer'),'','title_commercial.png');
+
 
 $sql="SELECT * ";
 $sql.= 'FROM '.MAIN_DB_PREFIX."helpdesk_ticket as t ";
@@ -80,7 +131,7 @@ if ($result) {
 }
 
 
-print '<form name="form_ticket" action="'.$_SERVER["PHP_SELF"].'" method="post">';
+print '<form name="form_ticket" action="'.$_SERVER["REQUEST_URI"].'&action=update" method="post">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<input type="hidden" name="action" value="update">';
 print '<input type="hidden" name="ticket" value="'.$ticket.'">';
@@ -199,7 +250,7 @@ print "<br /><br /><br />";
 
 print "<table>\n";
 
-$sql="SELECT c.rowid, c.userid, c.datec, c.pubdesc, c.privdesc, u.firstname, u.lastname ";
+$sql="SELECT c.rowid, c.userid, c.datec, c.pubdesc, c.privdesc, c.timecard, c.techprofile, c.points, u.firstname, u.lastname ";
 $sql.= 'FROM '.MAIN_DB_PREFIX."helpdesk_comment as c, ";
 $sql.= MAIN_DB_PREFIX."user as u ";
 $sql.= ' WHERE c.ticketid = '.$ticket;
@@ -213,8 +264,13 @@ if ($result)
 {
     while ($obj = $db->fetch_object($result)) {
         print '<tr>';
-        print '<td>'.$obj->firstname.' '.$obj->lastname.'<br />';
-        print date( 'Y-m-d H:i:s', strtotime($obj->datec)).'<br />';
+        print '<td>Intervenant : '.$obj->firstname.' '.$obj->lastname.'<br />';
+        print 'Date : '.date( 'Y-m-d H:i:s', strtotime($obj->datec)).'<br />';
+        $tc_hours = floor($obj->timecard / 60);
+        $tc_minutes = $obj->timecard % 60;
+        print 'Temps passé : '.$tc_hours.':'.$tc_minutes.'<br />';
+        print 'Points : '.$obj->points.'<br />';
+        print 'Profil : '.getProfileNameFromID($obj->techprofile).'<bbr />';
         print '</td>';
         print '</tr>';
 
@@ -227,6 +283,8 @@ if ($result)
             print '<td><textarea rows="8" cols="100">'.$obj->pubdesc.'</textarea></td>';
             print '</tr>';
         }
+        print '<tr><td></td><td><a href="'.$_SERVER['PHP_SELF'].'?ticket='.$ticket.'&comment='.$obj->rowid.'&action=inter">Cr&#233;er une fiche d\'intervention</a></td></tr>';
+        print '<tr><td colspan="2"><hr /></td></tr>';
     }
 }
 
